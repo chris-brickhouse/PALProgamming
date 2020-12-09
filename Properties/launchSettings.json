@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PALProgramming": {
+      "commandName": "Project",
+      "commandLineArgs": "this_is_my_argument"
+    }
+  }
+}
