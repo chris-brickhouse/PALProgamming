@@ -61,7 +61,7 @@ namespace PALProgramming {
             // replace the space in the username gathered with a period
             string period_name = user_name.Replace(" ", ".");
             Console.WriteLine(period_name);
-            Console.ReadLine();
+            Console.ReadLine(); 
 
         }
 
