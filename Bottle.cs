@@ -1,4 +1,9 @@
-﻿
+﻿// an object is like a car and properties are like the color, make, model, other describing qualities.
+// in this example we create the parent object "Bottle" which has shared properties Number, Size, Type. Type is from the enum BottleType
+// The Child objects Beer, Juice, Soda, Water inherit the Bottle object - the " : Bottle" is the code that causes the inheritance
+// they all have their own properties like "ABV", "Source", etc, but since they inherit Bottle they also have Number, Size, Type
+// inside the constructor of each child object it sets the type.
+
 namespace PALProgramming {
 
     // create an enum object with different bottle types
@@ -11,7 +16,7 @@ namespace PALProgramming {
     class Bottle {        
         public int? Number { get; set; }
         public decimal? Size { get; set; }
-        public BottleType Type { get; set; }
+        public BottleType? Type { get; set; }
     }
 
     // children classes Beer, Soda, Juice, Water

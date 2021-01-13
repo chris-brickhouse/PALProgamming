@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using System.IO;
+using PALProgramming.Models;
 
 namespace PALProgramming {
 
@@ -14,8 +15,8 @@ namespace PALProgramming {
             // FIXME: this is a fixme
 
             // simple hello world write to console
-            Console.WriteLine("Hello World!");
-            Console.ReadLine();
+            //Console.WriteLine("Hello World!");
+            //Console.ReadLine();
 
             // make the message into a string variable than we then output
             string my_string = "Hello World, this is my first C# app! ";
@@ -183,20 +184,20 @@ namespace PALProgramming {
             }
             Console.ReadLine();
 
-            // right click on the project (PALProgramming) and click "add  --> class". Call it "NinetyNineBottles.cs". Go into the file after created and follow along from there
+            // ACTION: right click on the project (PALProgramming) and click "add  --> class". Call it "NinetyNineBottles.cs". Go into the file after created and follow along from there
 
             // call the object we created with whatever number (I used 45), it will run it that many times
             // put a breakpoint on the nn.Run99 so you can see the properties of the 'nn' object
-            NinetyNineBottles nn = new NinetyNineBottles(45);           
+            NinetyNineBottles nn = new NinetyNineBottles(45);
             nn.Run99();
 
             // this will show you what you passed in the number field and the halfway there point
             Console.WriteLine($"{nn.Number} - halfwaythere = {nn.HalfWayThere}");
             Console.ReadLine();
 
-            // right click on the project (PALProgramming) and click "add --> class". Call it "Bottle.cs". Go into the file and follow along from there.
+            // ACTION: right click on the project (PALProgramming) and click "add --> class". Call it "Bottle.cs". Go into the file and follow along from there.
 
-            // create 'bl' variable which is a complex list, a list of the new Bottle class we created in Bottle.cs
+            //create 'bl' variable which is a complex list, a list of the new Bottle class we created in Bottle.cs
             List<Bottle> bl = new List<Bottle>();
 
             // loop 99 times
@@ -220,6 +221,68 @@ namespace PALProgramming {
             }
             Console.ReadLine();
 
+            // a different way to loop - ForEach loops through every Bottle in the List of Bottles with the variable 'b' as a lambda expression
+            bl.ForEach(b => {
+                Console.WriteLine($"{b.Number} bottles of {b.Type}, {b.Number} bottles of {b.Type}, take one down and pass it around, {b.Number - 1} bottle of {b.Type} on the wall");
+            });
+            Console.ReadLine();
+
+            // get the bottle with the Number propery equal 100. since it doesn't exist since we only added 99, it will use the Bottle object after the "??", which is called a null coalesce operator. if something is null, use a default instead.
+            Bottle bottle = bl.Where(x => x.Number == 100).FirstOrDefault() ?? new Bottle() { Number = 0, Type = null };
+            Console.WriteLine($"Bottle type for #{bottle.Number} - {bottle.Type}");
+            Console.ReadLine();
+
+            // create one of the child objects of Bottle, beer.
+            Beer beer = new Beer() { Number = 700, ABV = "15%", Size = 40 };
+            Console.WriteLine($"Bottle type for #{beer.Number} - {beer.Type} - {beer.ABV}");
+            Console.ReadLine();
+
+            // now, fun with dates. create a new date object
+            DateTime now = DateTime.Now;
+            Console.WriteLine(now);
+
+            // format in various ways
+            Console.WriteLine(now.ToShortDateString());
+            Console.WriteLine(now.ToShortTimeString());
+            Console.WriteLine(now.ToString("MM/dd/yyyy hh:mm tt"));
+            now = now.AddMonths(20);
+            Console.WriteLine(now.Date.Year);
+            Console.ReadLine();
+
+            // create list of DateTime objects with the dates from this day from the previous 12 months
+            List<DateTime> ld = new List<DateTime>();
+            for (int i = 0; i <= 11; i++) {
+                ld.Add(DateTime.Today.AddMonths(-i));
+            }
+            Console.WriteLine(string.Join(",", ld.ToArray()));
+            Console.WriteLine(ld.First());
+            Console.WriteLine(ld.Last());
+            Console.ReadLine();
+
+            // ACTION: right click project, click add new --> class, create PALModels.cs, then go into the class and follow along from there
+
+            // once finished all of that, create instance of newly created dbcontext PALModels.
+            PALModels db = new PALModels();
+
+            // query the PALModels Users dbset for all treachers, return as a list of users. 
+            List<Users> lu = (from u in db.Users where u.IsTeacher == true orderby u.LastName select u).ToList() ?? new List<Users>();
+
+            // loop the above results and output the full name
+            lu.ForEach(u => {
+                Console.WriteLine($"{u.FullName} - {u.UserID}");
+            });
+
+            Console.Read();
+
+            // try to select a user that doesn't exist 
+            Users user = (from u in db.Users where u.UserID == 666 select u).FirstOrDefault() ?? new Users() { FirstName = "No", LastName = "User" };
+            if (user.UserID == 0) {
+                Console.WriteLine($"Does not exist");
+            } else {
+                Console.WriteLine($"{user.FullName} - {user.UserID}");
+            }
+            Console.Read();
+
         }
 
         static void NintyNineBottles() {
@@ -232,7 +295,7 @@ namespace PALProgramming {
                     Console.WriteLine($"{i} bottles of beer on the wall, almost halfway!");
                 } else {
                     Console.WriteLine($"{i} bottles of beer on the wall");
-                }               
+                }
             }
             Console.ReadLine();
         }
