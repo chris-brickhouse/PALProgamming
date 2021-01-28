@@ -11,7 +11,7 @@ namespace PALProgramming.Models {
     // each field from the db matches up to the property by the same name and equivalent data type. 
     // every class used as a model should be like this.
 
-    // ACTION: after completing, return to Program.cs
+    // ACTION: after completing, return to PALModels.cs
 
     [Table("UsersGrades")]
     class UsersGrades {

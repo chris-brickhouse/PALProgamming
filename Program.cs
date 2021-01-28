@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml;
 using System.IO;
 using PALProgramming.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace PALProgramming {
 
@@ -19,9 +20,9 @@ namespace PALProgramming {
             //Console.ReadLine();
 
             // make the message into a string variable than we then output
-            string my_string = "Hello World, this is my first C# app! ";
-            Console.WriteLine(my_string);
-            Console.ReadLine();
+            //string my_string = "Hello World, this is my first C# app! ";
+            //Console.WriteLine(my_string);
+            //Console.ReadLine();
 
             // run 99 bottles function, on line 62
             NintyNineBottles();
@@ -282,6 +283,114 @@ namespace PALProgramming {
                 Console.WriteLine($"{user.FullName} - {user.UserID}");
             }
             Console.Read();
+
+            // re-use lu variable.
+            // using Include - and ThenInclude - to populate child objects.
+            lu = (from u in db.Users.Include(x => x.UsersAttendance).ThenInclude(x => x.Class).Include(x => x.UsersGrades).ThenInclude(x => x.Class) where u.IsTeacher == false select u).ToList();
+
+            if (lu.Count() > 0) {
+                // loop through all students
+                lu.ForEach(x => {
+
+                    Console.WriteLine($"{x.FullName} -  {x.UserID}");
+                    
+                    // loop the UsersAttendance List on the Users Object that was included on line 290
+                    if (x.UsersAttendance.Count() > 0) {
+                        // if any records exist, show attended date and class name (included using ThenInclude on line 290)
+                        x.UsersAttendance.ForEach(y => {
+                            Console.WriteLine($"Attended {y.Class.Name}: {y.AttendanceDate}");
+                        });
+                    } else {
+                        Console.WriteLine($"No records for attendance");
+                    }
+
+                    // loop the UsersGrades List on the Users Object that was included on line 290
+                    if (x.UsersGrades.Count() > 0) {
+                        // if any records exist, show class grade and class name (included using ThenInclude on line 290)
+                        x.UsersGrades.ForEach(y => {
+                            Console.WriteLine($"Grade for {y.Class.Name}: {y.Grade}");
+                        });
+
+                        // show sum for all grades if user has grades
+                        Console.WriteLine($"Sum for grades: {x.UsersGrades.Sum(y => y.Grade)}");
+
+                        // show average for grades
+                        Console.WriteLine($"Average for grades: {x.UsersGrades.Average(y => y.Grade)}");
+                    } else {
+                        Console.WriteLine($"No records for grades");
+                    }
+                });
+            } else {
+                Console.WriteLine($"No records for users.");
+            }
+
+            // update user with ID of 3 to a new user that you enter in console
+            Users user1 = (from u in db.Users where u.UserID == 3 select u).FirstOrDefault() ?? new Users();
+            Console.WriteLine($"Enter a new password for: {user1.FullName}");
+            string new_password = Console.ReadLine();
+            user1.Password = new_password;
+            db.Users.Update(user1);
+            db.SaveChanges();
+
+            // remove user with ID of 3 you declared on line 330
+            db.Users.Remove(user1);
+            db.SaveChanges();
+
+            // remove user with ID of 4 using .Find
+            db.Users.Remove(db.Users.Find(4));
+            db.SaveChanges();
+
+            // prompt yourself to enter five fields for user separated by pipe (|) character
+            Console.WriteLine($"Enter a new user like this: firstname|lastname|email|password|isteacher");
+            string new_user = Console.ReadLine();
+
+            // split object you just input by pipe (|)
+            string[] new_user_split = new_user.Split("|");
+
+            // populate new users object with new_user_split, a 5 item array that you entered into terminal
+            user1 = new Users() { FirstName = new_user_split[0], LastName = new_user_split[1], Email = new_user_split[2], Password = new_user_split[3], IsTeacher = Convert.ToBoolean(new_user_split[4]) };
+            
+            // since this has UserID = 0, .Update will add a new record.
+            db.Users.Update(user1);
+            db.SaveChanges();
+
+            // ACTION: view slideshow @ https://docs.google.com/presentation/d/1Ew4dCbDwd2UDAGdOTFK0RAbDZ0cHP9R4F2d74RFowyE/edit?usp=sharing
+            // ACTION: open notepad and create the following document - everything from <html> to <html>:
+            /*
+                 <html>
+                   <head>
+                       <title>this is my simple page</title>
+                       <style>
+                           body {
+                               background-color: red; 
+                               color: white; 
+                               text-align: center;
+                           }
+                           div#first_div {
+                               background-color: white; 
+                               border: 1px solid black; 
+                               color: red;
+                               padding:15px;
+                               margin:10px;
+                           }
+                       </style>
+                   </head>
+
+                   <body>
+                       <div id="first_div">this is my first html page!</div>
+                       <a href="http://google.com">google.com</a> | <a href="http://facebook.com">facebook.com</a> 
+                   </body>
+                </html>
+             */
+            // ACTION: save as Your Documents/test.html. Open browser. Hit ctrl+0 and open your documents/test.html
+            // Watch video for breakdown of how to build above document and what it all does
+            // ACTION: go to github, repositories --> create new repository, per video. Call it PALProgrammingWeb. click the code dropdown and copy the clone URL.
+            // ACTION: in visual studio, either open new copy or file --> new project, if new copy use create new project. Give it the name PALProgrammingWeb.
+            // ACTION: choose project type ASP.NET Core Web Application -- > then Model Vide Controller (MVC) 
+            // ACTION: click git changes - if git changes isn't open hit view --> git changes, click create new repository, existing remote, then paste the github clone URL there.
+            // We will pick up there next time.
+
+            Console.ReadLine();
 
         }
 

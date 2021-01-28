@@ -24,17 +24,6 @@ namespace PALProgramming {
     // this class is a programatic representation of your database. it inherits the DbContext class, which allows you to turn your database into queryable and sortable lists of objects. 
     class PALModels : DbContext {
 
-        // there is a DbSet for each Model which matches a DB table. This allows you to query and list the items using Linq.
-
-        // ACTION: right click on project, click new folder, call it "Models"
-        // ACTION: right click on new Models folder and click add new class, and create four classes: Classes.cs, Users.cs, UsersAttendance.cs, UsersGrades.cs
-        // ACTION: after creating those files enter Classes.cs and follow from there. after creating the properties from each class come back here.
-
-        public virtual DbSet<Classes> Classes { get; set; }
-        public virtual DbSet<Users> Users { get; set; }
-        public virtual DbSet<UsersAttendance> UsersAttendance { get; set; }
-        public virtual DbSet<UsersGrades> UsersGrades { get; set; }
-
         // this is a helper function that uses ConfigurationBuilder to extract some settings from appsettings.json, which we created earlier
         public static string GetConnectionString() {
             string applicationDirectory = Environment.CurrentDirectory;
@@ -48,6 +37,19 @@ namespace PALProgramming {
         protected override void OnConfiguring(DbContextOptionsBuilder builder) {
             builder.UseSqlServer(GetConnectionString());
         }
+
+        // there is a DbSet for each Model which matches a DB table. This allows you to query and list the items using Linq.
+
+        // ACTION: right click on project, click new folder, call it "Models"
+        // ACTION: right click on new Models folder and click add new class, and create four classes: Classes.cs, Users.cs, UsersAttendance.cs, UsersGrades.cs
+        // ACTION: after creating those files enter Classes.cs and follow from there. after creating the properties from each class come back here.
+
+        public virtual DbSet<Classes> Classes { get; set; }
+        public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<UsersAttendance> UsersAttendance { get; set; }
+        public virtual DbSet<UsersGrades> UsersGrades { get; set; }
+
+        // ACTION: after adding the DbSets, return to Program.cs  
 
 
     }
